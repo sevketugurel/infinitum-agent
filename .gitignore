@@ -1,0 +1,4 @@
+*.json  # Service account keys
+.env
+__pycache__/
+*.pyc
