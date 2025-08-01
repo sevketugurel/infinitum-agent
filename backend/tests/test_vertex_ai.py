@@ -2,7 +2,7 @@
 import pytest
 import os
 from unittest.mock import Mock, patch, MagicMock
-from app.services.vertex_ai import ask_gemini, initialize_vertex_ai, create_llm_with_retry
+from infinitum.services.vertex_ai import ask_gemini, initialize_vertex_ai, create_llm_with_retry
 
 
 class TestVertexAI:
@@ -11,7 +11,7 @@ class TestVertexAI:
     def test_ask_gemini_with_valid_prompt(self):
         """Test ask_gemini with a valid prompt."""
         # Mock the global llm variable
-        with patch('app.services.vertex_ai.llm') as mock_llm:
+        with patch('infinitum.services.vertex_ai.llm') as mock_llm:
             mock_llm.call.return_value = "Test response from Gemini"
             
             result = ask_gemini("Test prompt")
@@ -21,7 +21,7 @@ class TestVertexAI:
     
     def test_ask_gemini_with_none_llm(self):
         """Test ask_gemini when LLM is None."""
-        with patch('app.services.vertex_ai.llm', None):
+        with patch('infinitum.services.vertex_ai.llm', None):
             with pytest.raises(RuntimeError) as exc_info:
                 ask_gemini("Test prompt")
             
@@ -29,7 +29,7 @@ class TestVertexAI:
     
     def test_ask_gemini_with_empty_response(self):
         """Test ask_gemini when LLM returns empty response."""
-        with patch('app.services.vertex_ai.llm') as mock_llm:
+        with patch('infinitum.services.vertex_ai.llm') as mock_llm:
             mock_llm.call.return_value = ""
             
             with pytest.raises(RuntimeError) as exc_info:
@@ -39,7 +39,7 @@ class TestVertexAI:
     
     def test_ask_gemini_with_llm_exception(self):
         """Test ask_gemini when LLM throws an exception."""
-        with patch('app.services.vertex_ai.llm') as mock_llm:
+        with patch('infinitum.services.vertex_ai.llm') as mock_llm:
             mock_llm.call.side_effect = Exception("LLM connection error")
             
             with pytest.raises(RuntimeError) as exc_info:
@@ -57,7 +57,7 @@ class TestVertexAI:
             ("", "Empty prompt response"),
         ]
         
-        with patch('app.services.vertex_ai.llm') as mock_llm:
+        with patch('infinitum.services.vertex_ai.llm') as mock_llm:
             for prompt, expected_response in test_cases:
                 mock_llm.call.return_value = expected_response
                 
@@ -66,7 +66,7 @@ class TestVertexAI:
                 assert result == expected_response
                 mock_llm.call.assert_called_with(prompt)
     
-    @patch('app.services.vertex_ai.os.getenv')
+    @patch('infinitum.services.vertex_ai.os.getenv')
     def test_initialize_vertex_ai_missing_credentials(self, mock_getenv):
         """Test initialize_vertex_ai when credentials are missing."""
         mock_getenv.return_value = None
@@ -76,8 +76,8 @@ class TestVertexAI:
         
         assert "GOOGLE_APPLICATION_CREDENTIALS environment variable not set" in str(exc_info.value)
     
-    @patch('app.services.vertex_ai.os.path.exists')
-    @patch('app.services.vertex_ai.os.getenv')
+    @patch('infinitum.services.vertex_ai.os.path.exists')
+    @patch('infinitum.services.vertex_ai.os.getenv')
     def test_initialize_vertex_ai_credentials_file_not_found(self, mock_getenv, mock_exists):
         """Test initialize_vertex_ai when credentials file doesn't exist."""
         mock_getenv.return_value = "/fake/path/to/credentials.json"
@@ -90,7 +90,7 @@ class TestVertexAI:
     
     def test_create_llm_with_retry_success_first_attempt(self):
         """Test create_llm_with_retry succeeds on first attempt."""
-        with patch('app.services.vertex_ai.LLM') as mock_llm_class:
+        with patch('infinitum.services.vertex_ai.LLM') as mock_llm_class:
             mock_llm_instance = Mock()
             mock_llm_instance.call.return_value = "Test response"
             mock_llm_class.return_value = mock_llm_instance
@@ -107,10 +107,10 @@ class TestVertexAI:
     
     def test_create_llm_with_retry_fails_all_attempts(self):
         """Test create_llm_with_retry fails after all retries."""
-        with patch('app.services.vertex_ai.LLM') as mock_llm_class:
+        with patch('infinitum.services.vertex_ai.LLM') as mock_llm_class:
             mock_llm_class.side_effect = Exception("Connection failed")
             
-            with patch('app.services.vertex_ai.time.sleep'):  # Speed up test
+            with patch('infinitum.services.vertex_ai.time.sleep'):  # Speed up test
                 result = create_llm_with_retry("test-model", max_retries=2)
             
             assert result is None
@@ -120,7 +120,7 @@ class TestVertexAI:
         """Test create_llm_with_retry with temporary errors."""
         from litellm.exceptions import RateLimitError
         
-        with patch('app.services.vertex_ai.LLM') as mock_llm_class:
+        with patch('infinitum.services.vertex_ai.LLM') as mock_llm_class:
             # First call fails with rate limit, second succeeds
             mock_llm_instance = Mock()
             mock_llm_instance.call.return_value = "Success"
@@ -130,7 +130,7 @@ class TestVertexAI:
                 mock_llm_instance
             ]
             
-            with patch('app.services.vertex_ai.time.sleep'):  # Speed up test
+            with patch('infinitum.services.vertex_ai.time.sleep'):  # Speed up test
                 result = create_llm_with_retry("test-model", max_retries=3)
             
             assert result == mock_llm_instance

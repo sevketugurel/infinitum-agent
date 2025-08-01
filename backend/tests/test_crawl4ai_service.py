@@ -3,7 +3,7 @@ import pytest
 import asyncio
 import json
 from unittest.mock import Mock, patch, AsyncMock
-from app.services.crawl4ai_service import (
+from infinitum.services.crawl4ai_service import (
     get_structured_data, 
     get_structured_data_sync, 
     _clean_product_data,
