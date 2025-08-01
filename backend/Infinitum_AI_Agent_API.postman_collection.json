@@ -1,0 +1,514 @@
+{
+	"info": {
+		"_postman_id": "infinitum-ai-agent-api",
+		"name": "Infinitum AI Agent API",
+		"description": "Complete API collection for testing Infinitum AI Agent endpoints",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "infinitum-ai-agent"
+	},
+	"item": [
+		{
+			"name": "Health & Status",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/healthz",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"healthz"
+							]
+						},
+						"description": "Check if the application is healthy and running"
+					},
+					"response": []
+				},
+				{
+					"name": "Logging Health",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/admin/logging/health",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"logging",
+								"health"
+							]
+						},
+						"description": "Detailed logging system health check"
+					},
+					"response": []
+				},
+				{
+					"name": "Metrics",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/metrics",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"metrics"
+							]
+						},
+						"description": "Prometheus metrics endpoint"
+					},
+					"response": []
+				},
+				{
+					"name": "SerpAPI Status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/serpapi-status",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"serpapi-status"
+							]
+						},
+						"description": "Check SerpAPI account status and quota"
+					},
+					"response": []
+				},
+				{
+					"name": "LLM Status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/llm-status",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"llm-status"
+							]
+						},
+						"description": "Check LLM (Gemini) status and availability"
+					},
+					"response": []
+				},
+				{
+					"name": "Quota Status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/quota-status",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"quota-status"
+							]
+						},
+						"description": "Check API quota and usage information"
+					},
+					"response": []
+				}
+			],
+			"description": "Health check and status monitoring endpoints"
+		},
+		{
+			"name": "Product Search & Packages",
+			"item": [
+				{
+					"name": "Create Package - Home Accessories",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"I want to buy home accessories\",\n  \"metadata\": {\n    \"source\": \"postman-test\",\n    \"category\": \"home-decor\"\n  },\n  \"user_id\": \"test-user-123\",\n  \"preferences\": {\n    \"budget_range\": \"mid-range\",\n    \"style\": \"modern\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/packages",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"packages"
+							]
+						},
+						"description": "Create a product package for home accessories search"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Package - Electronics",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"best wireless headphones for gaming\",\n  \"metadata\": {\n    \"source\": \"postman-test\",\n    \"category\": \"electronics\"\n  },\n  \"user_id\": \"test-user-456\",\n  \"preferences\": {\n    \"budget_range\": \"high-end\",\n    \"brand_preference\": [\"Sony\", \"Bose\", \"Sennheiser\"]\n  }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/packages",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"packages"
+							]
+						},
+						"description": "Create a product package for electronics search"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Package - Fashion",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"query\": \"summer dresses for women\",\n  \"metadata\": {\n    \"source\": \"postman-test\",\n    \"category\": \"fashion\"\n  },\n  \"user_id\": \"test-user-789\",\n  \"preferences\": {\n    \"budget_range\": \"affordable\",\n    \"style\": \"casual\",\n    \"size\": \"M\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/packages",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"packages"
+							]
+						},
+						"description": "Create a product package for fashion search"
+					},
+					"response": []
+				},
+				{
+					"name": "Packages Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/packages/health",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"packages",
+								"health"
+							]
+						},
+						"description": "Health check for packages service"
+					},
+					"response": []
+				}
+			],
+			"description": "Product search and package creation endpoints"
+		},
+		{
+			"name": "Web Scraping",
+			"item": [
+				{
+					"name": "Research Product",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"product_query\": \"iPhone 15 Pro Max\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/research-product",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"research-product"
+							]
+						},
+						"description": "Research a specific product using AI agents"
+					},
+					"response": []
+				},
+				{
+					"name": "Scrape with Crawl4AI",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/scrape-crawl4ai?url=https://www.amazon.com/dp/B0CM5KJ6B8",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"scrape-crawl4ai"
+							],
+							"query": [
+								{
+									"key": "url",
+									"value": "https://www.amazon.com/dp/B0CM5KJ6B8",
+									"description": "URL to scrape"
+								}
+							]
+						},
+						"description": "Scrape product data from a URL using Crawl4AI"
+					},
+					"response": []
+				}
+			],
+			"description": "Web scraping and product research endpoints"
+		},
+		{
+			"name": "User Management",
+			"item": [
+				{
+					"name": "Get User Profile",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/users/test-user-123/profile",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"test-user-123",
+								"profile"
+							]
+						},
+						"description": "Get user profile and preferences"
+					},
+					"response": []
+				},
+				{
+					"name": "Update User Preferences",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"preferred_language\": \"en\",\n  \"currency\": \"USD\",\n  \"budget_conscious\": true,\n  \"quality_focused\": false,\n  \"brand_preferences\": [\"Apple\", \"Samsung\", \"Sony\"],\n  \"category_interests\": [\"electronics\", \"gaming\", \"audio\"],\n  \"price_range_preference\": \"mid_range\",\n  \"delivery_preference\": \"fast\",\n  \"review_importance\": \"high\",\n  \"warranty_importance\": \"medium\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/users/test-user-123/preferences",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"test-user-123",
+								"preferences"
+							]
+						},
+						"description": "Update user preferences"
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Conversations",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/users/test-user-123/conversations?limit=10",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"test-user-123",
+								"conversations"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "10",
+									"description": "Number of conversations to retrieve"
+								}
+							]
+						},
+						"description": "Get user's conversation history"
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Context",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/users/test-user-123/context?current_query=wireless headphones",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"test-user-123",
+								"context"
+							],
+							"query": [
+								{
+									"key": "current_query",
+									"value": "wireless headphones",
+									"description": "Current user query for context"
+								}
+							]
+						},
+						"description": "Get user context for current query"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Personalized Recommendations",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/users/test-user-123/recommendations",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"test-user-123",
+								"recommendations"
+							]
+						},
+						"description": "Get personalized product recommendations"
+					},
+					"response": []
+				},
+				{
+					"name": "Users Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/users/health",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"health"
+							]
+						},
+						"description": "Health check for users service"
+					},
+					"response": []
+				}
+			],
+			"description": "User management and context endpoints"
+		},
+		{
+			"name": "Cache Management",
+			"item": [
+				{
+					"name": "Clear Response Cache",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/clear-cache",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"clear-cache"
+							]
+						},
+						"description": "Clear the LLM response cache"
+					},
+					"response": []
+				}
+			],
+			"description": "Cache management endpoints"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8080",
+			"type": "string"
+		}
+	]
+} 

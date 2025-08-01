@@ -15,11 +15,8 @@ from infinitum.infrastructure.logging_config import (
 from infinitum.infrastructure.middleware import setup_logging_middleware
 from infinitum.infrastructure.logging_dashboard import create_dashboard_routes, setup_log_capture, get_logging_health
 from infinitum.settings import settings
-import asyncio
-import threading
-from prometheus_client import start_http_server, generate_latest, CONTENT_TYPE_LATEST
+from prometheus_client import generate_latest, CONTENT_TYPE_LATEST
 from fastapi.responses import Response
-import uvicorn
 
 # Setup Enhanced Logging
 setup_enhanced_logging()
@@ -77,20 +74,6 @@ def logging_health():
 def metrics():
     """Prometheus metrics endpoint"""
     return Response(generate_latest(), media_type=CONTENT_TYPE_LATEST)
-
-def start_metrics_server():
-    """Start Prometheus metrics server on port 9090"""
-    try:
-        start_http_server(9090)
-        logger.info("✅ Prometheus metrics server started on port 9090")
-    except Exception as e:
-        logger.error(f"❌ Failed to start metrics server: {e}")
-
-# Start metrics server in a separate thread
-if settings.ENABLE_METRICS:
-    metrics_thread = threading.Thread(target=start_metrics_server, daemon=True)
-    metrics_thread.start()
-    logger.info("🚀 Starting Prometheus metrics server...")
 
 
 @app.get("/serpapi-status")

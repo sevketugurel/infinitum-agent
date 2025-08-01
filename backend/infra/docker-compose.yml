@@ -8,7 +8,6 @@ services:
     container_name: infinitum-ai-agent
     ports:
       - "8080:8080"
-      - "9090:9090"  # Metrics port
     volumes:
       # Mount credentials directory for Google Cloud authentication
       - ../credentials:/app/credentials:ro
