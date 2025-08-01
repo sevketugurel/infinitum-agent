@@ -1,0 +1,123 @@
+# Cloud Run service configuration for Infinitum AI Agent
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: infinitum-ai-agent
+  labels:
+    app: infinitum-ai-agent
+    environment: production
+  annotations:
+    run.googleapis.com/ingress: all
+    run.googleapis.com/execution-environment: gen2
+spec:
+  template:
+    metadata:
+      annotations:
+        # Performance optimizations
+        run.googleapis.com/cpu-throttling: "false"
+        run.googleapis.com/memory: "2Gi"
+        run.googleapis.com/cpu: "2"
+        
+        # Scaling configuration
+        autoscaling.knative.dev/minScale: "1"
+        autoscaling.knative.dev/maxScale: "10"
+        
+        # Timeout configuration
+        run.googleapis.com/timeout: "300s"
+        
+        # VPC configuration (optional)
+        # run.googleapis.com/vpc-access-connector: projects/PROJECT_ID/locations/REGION/connectors/CONNECTOR_NAME
+        
+        # Service account
+        run.googleapis.com/service-account: infinitum-agent@infinitum-agent.iam.gserviceaccount.com
+    spec:
+      serviceAccountName: infinitum-agent@infinitum-agent.iam.gserviceaccount.com
+      containerConcurrency: 10
+      timeoutSeconds: 300
+      containers:
+      - name: infinitum-ai-agent
+        image: gcr.io/infinitum-agent/infinitum-ai-agent:latest
+        ports:
+        - name: http1
+          containerPort: 8080
+        env:
+        # GCP Configuration
+        - name: GCP_PROJECT_ID
+          value: "infinitum-agent"
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: "/app/credentials/service-account.json"
+        
+        # Vertex AI Configuration
+        - name: GEMINI_MODEL
+          value: "gemini-2.5-pro"
+        
+        # Firebase Configuration
+        - name: FIREBASE_PROJECT_ID
+          value: "infinitum-agent"
+        
+        # Environment
+        - name: ENVIRONMENT
+          value: "production"
+        - name: PORT
+          value: "8080"
+        
+        # API Keys (use Secret Manager in production)
+        - name: SERPAPI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: api-keys
+              key: serpapi-key
+        - name: GEMINI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: api-keys
+              key: gemini-key
+        
+        # Resource configuration
+        resources:
+          limits:
+            cpu: "2000m"
+            memory: "2Gi"
+          requests:
+            cpu: "1000m"
+            memory: "1Gi"
+        
+        # Health checks
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 30
+          timeoutSeconds: 10
+          failureThreshold: 3
+        
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        
+        # Startup probe for slow-starting applications
+        startupProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 10
+        
+        # Volume mounts for credentials
+        volumeMounts:
+        - name: service-account-volume
+          mountPath: /app/credentials
+          readOnly: true
+      
+      volumes:
+      - name: service-account-volume
+        secret:
+          secretName: service-account-key

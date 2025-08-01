@@ -1,4 +1,8 @@
-*.json  # Service account keys
+# Service account keys and credentials
+credentials/*.json
+# API keys and sensitive configuration
+*.key.json
+*.credentials.json
 .env
 __pycache__/
 *.pyc
@@ -46,3 +50,13 @@ ENV/
 # OS
 .DS_Store
 Thumbs.db
+
+# Logs
+logs/*.log
+*.log
+
+# Poetry
+poetry.lock
+
+# Docker
+.dockerignore

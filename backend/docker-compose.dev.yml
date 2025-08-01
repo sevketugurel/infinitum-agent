@@ -1,0 +1,92 @@
+version: '3.8'
+
+services:
+  infinitum-ai-agent:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: infinitum-ai-agent-dev
+    ports:
+      - "8080:8080"
+      - "9090:9090"  # Metrics port
+    volumes:
+      # Mount credentials directory for Google Cloud authentication
+      - ./credentials:/app/credentials:ro
+      # Mount logs directory for persistent logging
+      - ./logs:/app/logs
+      # Mount source code for hot reload (development)
+      - ./app:/app/app
+      # Mount examples directory for testing
+      - ./examples:/app/examples:ro
+    environment:
+      # Core configuration (Development)
+      - ENVIRONMENT=development
+      - PORT=8080
+      
+      # GCP Configuration (replace with your values)
+      - GCP_PROJECT_ID=${GCP_PROJECT_ID:-infinitum-agent}
+      - FIREBASE_PROJECT_ID=${FIREBASE_PROJECT_ID:-infinitum-agent}
+      - GOOGLE_CLOUD_PROJECT=${GOOGLE_CLOUD_PROJECT:-infinitum-agent}
+      
+      # Google Cloud Credentials
+      - GOOGLE_APPLICATION_CREDENTIALS=${GOOGLE_APPLICATION_CREDENTIALS:-/app/credentials/infinitum-agent-a9f15079e3e6.json}
+      
+      # API Keys (set these in your .env file or environment)
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - SERPAPI_API_KEY=${SERPAPI_API_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      
+      # Gemini Model Configuration
+      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-2.5-flash}
+      
+      # Enhanced Logging Configuration (Development)
+      - LOG_LEVEL=DEBUG
+      - LOG_FILE_PATH=/app/logs/application.log
+      - ENABLE_STRUCTURED_LOGGING=false
+      - ENABLE_RICH_LOGGING=true
+      - LOG_SAMPLING_RATE=1.0
+      
+      # Monitoring and Observability (Development)
+      - SENTRY_DSN=${SENTRY_DSN}
+      - ENABLE_METRICS=true
+      - METRICS_PORT=9090
+      - ENABLE_TRACING=false
+      
+      # Performance and Debug Settings (Development)
+      - ENABLE_PERFORMANCE_LOGGING=true
+      - LOG_SLOW_OPERATIONS=true
+      - SLOW_OPERATION_THRESHOLD=0.5
+      - ENABLE_DEBUG_LOGGING=true
+    
+    # Development-friendly resource limits
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+          cpus: '2.0'
+        reservations:
+          memory: 1G
+      
+    # Health check
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    
+    # Restart policy
+    restart: unless-stopped
+    
+    # Development logging configuration (more verbose)
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "5"
+
+# Optional: Add a network for multiple services
+networks:
+  default:
+    name: infinitum-ai-network-dev

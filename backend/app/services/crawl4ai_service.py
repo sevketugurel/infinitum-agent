@@ -58,13 +58,26 @@ async def get_structured_data(url: str) -> Dict[str, Any]:
             # Skip LLM extraction strategy for now - use basic crawling then Gemini fallback
             extraction_strategy = None
             
-            # Crawl the page (basic crawl, then use Gemini for extraction)
+            # Crawl the page with better anti-bot protection
             result = await crawler.arun(
                 url=url,
                 bypass_cache=True,
-                js_code="window.scrollTo(0, document.body.scrollHeight);",  # Scroll to load content
+                js_code=[
+                    "window.scrollTo(0, document.body.scrollHeight/3);",  # Scroll gradually
+                    "await new Promise(resolve => setTimeout(resolve, 1000));",  # Wait 1 second
+                    "window.scrollTo(0, document.body.scrollHeight);"
+                ],
                 wait_for="css:body",
-                timeout=30
+                timeout=40,
+                headers={
+                    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+                    'Accept-Language': 'en-US,en;q=0.5',
+                    'Accept-Encoding': 'gzip, deflate',
+                    'DNT': '1',
+                    'Connection': 'keep-alive',
+                    'Upgrade-Insecure-Requests': '1'
+                }
             )
             
             if result.success and result.cleaned_html:
@@ -91,7 +104,7 @@ async def _fallback_extraction(url: str, html_content: Optional[str] = None) -> 
             async with AsyncWebCrawler(verbose=False) as crawler:
                 result = await crawler.arun(url=url, timeout=20)
                 if result.success:
-                    html_content = result.cleaned_html[:10000]  # Limit to first 10k chars
+                    html_content = result.cleaned_html[:15000]  # Increased to 15k chars for better price detection
                 else:
                     raise Exception(f"Failed to crawl URL: {url}")
         
@@ -99,17 +112,29 @@ async def _fallback_extraction(url: str, html_content: Optional[str] = None) -> 
         prompt = f"""
         Extract product information from this HTML content and return ONLY a valid JSON object.
         
+        IMPORTANT: Look carefully for price information in these common formats:
+        - $99.99, $199, €150, £120
+        - "price": "$99.99", "cost": "$199"
+        - class="price", class="cost", class="amount"
+        - data-price, data-cost attributes
+        - Text near words like "Price:", "Cost:", "$", "USD", "EUR"
+        
         HTML Content:
-        {html_content[:8000]}  
+        {html_content[:12000]}  
         
         Return JSON with this structure:
         {{
             "title": "product title",
-            "price": "price with currency symbol",
+            "price": "price with currency symbol (e.g. $99.99)",
             "brand": "brand name", 
             "image": "full image URL",
             "description": "brief description under 200 chars"
         }}
+        
+        CRITICAL: If you find ANY price information, include it. Look for:
+        - Sale prices, regular prices, discounted prices
+        - Text like "Now $99", "Was $199 Now $149", "Starting at $99"
+        - Price ranges like "$99-$199"
         
         Use null for missing information. Return ONLY the JSON, no other text.
         """
@@ -137,15 +162,32 @@ async def _fallback_extraction(url: str, html_content: Optional[str] = None) -> 
             print(f"Failed to parse Gemini JSON response: {e}")
             print(f"Gemini response: {gemini_response}")
             
-            # Final fallback - return basic structure
+            # Try regex-based price extraction as fallback
+            import re
+            fallback_price = None
+            price_patterns = [
+                r'\$([0-9,]+\.?[0-9]*)',  # $99.99, $1,299
+                r'([0-9,]+\.?[0-9]*)\s*USD',  # 99.99 USD
+                r'Price:\s*\$([0-9,]+\.?[0-9]*)',  # Price: $99.99
+                r'€([0-9,]+\.?[0-9]*)',  # €99.99
+                r'£([0-9,]+\.?[0-9]*)',  # £99.99
+            ]
+            
+            for pattern in price_patterns:
+                match = re.search(pattern, html_content)
+                if match:
+                    fallback_price = f"${match.group(1)}"
+                    break
+            
+            # Final fallback - return basic structure with any found price
             return {
                 "title": "Product title not found",
-                "price": None,
+                "price": fallback_price,
                 "brand": None, 
                 "image": None,
                 "description": None,
                 "url": url,
-                "extraction_method": "fallback_failed",
+                "extraction_method": "regex_fallback" if fallback_price else "fallback_failed",
                 "error": f"Extraction failed: {str(e)}"
             }
             

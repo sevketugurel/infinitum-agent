@@ -202,25 +202,3 @@ async def scrape_crawl4ai(url: str):
         else:
             raise HTTPException(status_code=500, detail=f"Failed to scrape URL: {error_message}")
 
-@router.get("/test-crawl4ai")
-async def test_crawl4ai():
-    """
-    Test endpoint to verify Crawl4AI setup with a known working URL.
-    """
-    test_url = "https://www.amazon.com/dp/B0BDV6Q9LL"  # Sony headphones
-    
-    try:
-        result = await scrape_crawl4ai(test_url)
-        return {
-            "status": "success",
-            "message": "Crawl4AI test completed successfully",
-            "test_url": test_url,
-            "result": result
-        }
-    except Exception as e:
-        return {
-            "status": "error", 
-            "message": "Crawl4AI test failed",
-            "error": str(e),
-            "test_url": test_url
-        }

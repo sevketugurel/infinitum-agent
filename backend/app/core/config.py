@@ -9,7 +9,13 @@ class Settings(BaseSettings):
     GOOGLE_APPLICATION_CREDENTIALS: Optional[str] = None
     
     # Vertex AI Configuration
-    GEMINI_MODEL: str = "gemini-2.0-flash-001"
+    GEMINI_MODEL: str = "gemini-2.5-pro"
+    
+    # Quota Management
+    GEMINI_DAILY_QUOTA: int = 200  # Conservative limit for free tier
+    USE_PAID_TIER: bool = False  # Set to True if using paid tier
+    ENABLE_REQUEST_CACHING: bool = True
+    CACHE_DURATION_HOURS: int = 24
     
     # SerpAPI Configuration
     SERPAPI_API_KEY: Optional[str] = None
@@ -26,10 +32,32 @@ class Settings(BaseSettings):
     
     # Environment
     ENVIRONMENT: str = "development"
+    PORT: int = 8080
+    
+    # Enhanced Logging Configuration
+    LOG_LEVEL: str = "INFO"
+    LOG_FILE_PATH: Optional[str] = None
+    ENABLE_STRUCTURED_LOGGING: bool = True
+    ENABLE_RICH_LOGGING: bool = True  # For development
+    LOG_SAMPLING_RATE: float = 1.0  # Sample rate for performance
+    
+    # Monitoring and Observability
+    SENTRY_DSN: Optional[str] = None
+    ENABLE_METRICS: bool = True
+    METRICS_PORT: int = 9090
+    ENABLE_TRACING: bool = True
+    GOOGLE_CLOUD_PROJECT: Optional[str] = None
+    
+    # Performance and Debug Settings
+    ENABLE_PERFORMANCE_LOGGING: bool = True
+    LOG_SLOW_OPERATIONS: bool = True
+    SLOW_OPERATION_THRESHOLD: float = 1.0  # seconds
+    ENABLE_DEBUG_LOGGING: bool = False
     
     class Config:
-        # Find .env file in the backend directory (parent of app)
-        env_file = Path(__file__).parent.parent.parent / ".env"
+        # Try to find .env file, but don't fail if it doesn't exist (for Docker)
+        env_file_path = Path(__file__).parent.parent.parent / ".env"
+        env_file = env_file_path if env_file_path.exists() else None
         case_sensitive = False
 
     def __init__(self, **kwargs):
