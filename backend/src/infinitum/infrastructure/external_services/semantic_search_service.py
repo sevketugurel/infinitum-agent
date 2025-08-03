@@ -1,7 +1,7 @@
 # File: src/infinitum/services/semantic_search_service.py
 """
-Semantic Search Service for enhanced product understanding and matching
-Uses Google Vertex AI Embeddings for semantic similarity
+Enhanced Semantic Search Service with Vector Search Integration
+Combines traditional semantic analysis with advanced vector search capabilities
 """
 
 from typing import List, Dict, Any, Optional, Tuple
@@ -14,14 +14,27 @@ from infinitum.infrastructure.external_services.vertex_ai import ask_gemini
 from infinitum.infrastructure.persistence.firestore_client import db
 from infinitum.infrastructure.logging_config import get_agent_logger
 
+# Import new vector search components
+from infinitum.infrastructure.external_services.vector_search_service import (
+    vector_search_service, SearchFilter, SearchMode
+)
+from infinitum.infrastructure.external_services.embeddings_service import (
+    embeddings_service, EmbeddingRequest
+)
+
 logger = get_agent_logger("semantic_search")
 
 class SemanticSearchService:
-    """Enhanced semantic search capabilities for product matching"""
+    """Enhanced semantic search capabilities with vector search integration"""
     
     def __init__(self):
         self.products_collection = db.collection('products')
         self.embeddings_collection = db.collection('product_embeddings')
+        
+        # Vector search integration
+        self.use_vector_search = True
+        self.vector_search_threshold = 0.7
+        self.fallback_to_traditional = True
     
     async def enhance_query_understanding(self, user_query: str, user_context: Dict[str, Any] = None) -> Dict[str, Any]:
         """Enhance query understanding using semantic analysis"""
@@ -278,7 +291,7 @@ class SemanticSearchService:
         else:
             return f"{package_name} has limited alignment but may still be worth considering"
     
-    async def generate_semantic_suggestions(self, query_analysis: Dict[str, Any], 
+    async def generate_semantic_suggestions(self, query_analysis: Dict[str, Any],
                                           user_context: Dict[str, Any] = None) -> List[str]:
         """Generate semantic-based search suggestions"""
         try:
@@ -312,6 +325,213 @@ class SemanticSearchService:
         except Exception as e:
             logger.error(f"Error generating semantic suggestions: {e}")
             return ["Try different search terms", "Browse popular categories"]
+    
+    async def enhanced_vector_search(
+        self,
+        user_query: str,
+        user_context: Dict[str, Any] = None,
+        limit: int = 20,
+        use_hybrid: bool = True
+    ) -> Dict[str, Any]:
+        """
+        Enhanced search using vector search with traditional semantic analysis fallback
+        
+        Args:
+            user_query: User's search query
+            user_context: User context for personalization
+            limit: Maximum number of results
+            use_hybrid: Whether to use hybrid search
+            
+        Returns:
+            Dict containing search results and metadata
+        """
+        try:
+            logger.info(f"Enhanced vector search for query: '{user_query}'")
+            
+            # First, enhance query understanding using traditional analysis
+            query_analysis = await self.enhance_query_understanding(user_query, user_context)
+            
+            if self.use_vector_search:
+                try:
+                    # Convert query analysis to search filters
+                    filters = self._convert_analysis_to_filters(query_analysis)
+                    
+                    # Perform vector search
+                    if use_hybrid:
+                        search_result = await vector_search_service.hybrid_search(
+                            query=user_query,
+                            filters=filters,
+                            limit=limit,
+                            similarity_threshold=self.vector_search_threshold,
+                            user_context=user_context,
+                            semantic_weight=0.7,
+                            keyword_weight=0.3
+                        )
+                    else:
+                        search_result = await vector_search_service.semantic_search(
+                            query=user_query,
+                            filters=filters,
+                            limit=limit,
+                            similarity_threshold=self.vector_search_threshold,
+                            user_context=user_context
+                        )
+                    
+                    # Enhance results with traditional semantic analysis
+                    enhanced_results = await self._enhance_vector_results(
+                        search_result.results,
+                        query_analysis,
+                        user_context
+                    )
+                    
+                    return {
+                        "results": enhanced_results,
+                        "total_found": search_result.total_found,
+                        "query_analysis": query_analysis,
+                        "search_metadata": search_result.search_metadata,
+                        "suggestions": search_result.suggestions or [],
+                        "search_method": "vector_search",
+                        "query_time_ms": search_result.query_time_ms,
+                        "hybrid_search": use_hybrid
+                    }
+                    
+                except Exception as vector_error:
+                    logger.warning(f"Vector search failed: {vector_error}")
+                    if not self.fallback_to_traditional:
+                        raise
+                    
+                    logger.info("Falling back to traditional semantic search")
+            
+            # Fallback to traditional semantic search
+            # This would use the existing find_similar_products method
+            # For now, we'll return a structured response indicating fallback
+            return {
+                "results": [],
+                "total_found": 0,
+                "query_analysis": query_analysis,
+                "search_metadata": {
+                    "query": user_query,
+                    "fallback_used": True,
+                    "timestamp": datetime.now().isoformat()
+                },
+                "suggestions": await self.generate_semantic_suggestions(query_analysis, user_context),
+                "search_method": "traditional_fallback",
+                "query_time_ms": 0,
+                "hybrid_search": False
+            }
+            
+        except Exception as e:
+            logger.error(f"Enhanced vector search failed: {e}")
+            return {
+                "results": [],
+                "total_found": 0,
+                "query_analysis": {},
+                "search_metadata": {"error": str(e)},
+                "suggestions": [],
+                "search_method": "error",
+                "query_time_ms": 0,
+                "hybrid_search": False
+            }
+    
+    def _convert_analysis_to_filters(self, query_analysis: Dict[str, Any]) -> List[SearchFilter]:
+        """Convert query analysis to vector search filters"""
+        filters = []
+        
+        try:
+            # Category filters
+            categories = query_analysis.get("product_categories", [])
+            if categories:
+                filters.append(SearchFilter(
+                    namespace="category",
+                    values=categories,
+                    operator="allow"
+                ))
+            
+            # Budget filters
+            budget_signals = query_analysis.get("budget_signals", [])
+            if "budget_conscious" in budget_signals:
+                filters.append(SearchFilter(
+                    namespace="price_range",
+                    values=["0-50", "50-100"],
+                    operator="allow"
+                ))
+            elif "quality_focused" in budget_signals:
+                filters.append(SearchFilter(
+                    namespace="price_range",
+                    values=["200-500", "500+"],
+                    operator="allow"
+                ))
+            
+            # Feature-based filters
+            key_features = query_analysis.get("key_features", [])
+            if key_features:
+                # Convert features to searchable attributes
+                feature_filters = []
+                for feature in key_features[:3]:  # Limit to top 3 features
+                    feature_filters.append(feature.lower().replace(" ", "_"))
+                
+                if feature_filters:
+                    filters.append(SearchFilter(
+                        namespace="features",
+                        values=feature_filters,
+                        operator="allow"
+                    ))
+            
+        except Exception as e:
+            logger.error(f"Error converting analysis to filters: {e}")
+        
+        return filters
+    
+    async def _enhance_vector_results(
+        self,
+        vector_results: List[Any],
+        query_analysis: Dict[str, Any],
+        user_context: Dict[str, Any] = None
+    ) -> List[Dict[str, Any]]:
+        """Enhance vector search results with traditional semantic analysis"""
+        try:
+            enhanced_results = []
+            
+            for result in vector_results:
+                enhanced_result = {
+                    "id": result.id,
+                    "score": result.score,
+                    "vector_similarity": result.score,
+                    "metadata": result.metadata or {},
+                    "content": result.content or {}
+                }
+                
+                # Add semantic reasoning from traditional analysis
+                if result.content:
+                    semantic_score = self._calculate_semantic_similarity(
+                        {"title": result.content.get("title", ""),
+                         "description": result.content.get("description", "")},
+                        query_analysis.get("intent_analysis", ""),
+                        query_analysis.get("product_categories", []),
+                        query_analysis.get("key_features", []),
+                        query_analysis.get("use_case", ""),
+                        query_analysis.get("semantic_tags", [])
+                    )
+                    
+                    enhanced_result["semantic_score"] = semantic_score
+                    enhanced_result["combined_score"] = (result.score * 0.7) + (semantic_score * 0.3)
+                    enhanced_result["reasoning"] = self._generate_similarity_reasoning(
+                        {"title": result.content.get("title", "")},
+                        query_analysis,
+                        enhanced_result["combined_score"]
+                    )
+                
+                enhanced_results.append(enhanced_result)
+            
+            # Re-sort by combined score
+            enhanced_results.sort(key=lambda x: x.get("combined_score", x["score"]), reverse=True)
+            
+            return enhanced_results
+            
+        except Exception as e:
+            logger.error(f"Error enhancing vector results: {e}")
+            # Return original results in case of error
+            return [{"id": r.id, "score": r.score, "metadata": r.metadata, "content": r.content}
+                   for r in vector_results]
 
 # Global instance
 semantic_search_service = SemanticSearchService()

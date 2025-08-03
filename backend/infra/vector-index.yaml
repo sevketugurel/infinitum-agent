@@ -1,0 +1,152 @@
+# Vertex AI Vector Index Configuration for Product Semantic Search
+# This configuration defines a production-ready vector index optimized for e-commerce product search
+
+apiVersion: aiplatform.googleapis.com/v1
+kind: Index
+metadata:
+  name: product-semantic-index
+  labels:
+    environment: production
+    use-case: product-search
+    version: v1
+spec:
+  displayName: "Product Semantic Search Index"
+  description: "High-performance vector index for semantic product similarity search and recommendations"
+  
+  # Index Configuration
+  indexUpdateMethod: BATCH_UPDATE  # Optimized for bulk product updates
+  
+  # Vector Configuration
+  config:
+    # Embedding dimensions - optimized for text-embedding-004 (768) or text-embedding-ada-002 (1536)
+    dimensions: 768
+    
+    # Number of approximate neighbors to return during search
+    approximateNeighborsCount: 150
+    
+    # Distance measure for semantic similarity
+    distanceMeasureType: COSINE_DISTANCE
+    
+    # Algorithm configuration for balanced performance and accuracy
+    algorithmConfig:
+      treeAhConfig:
+        # Number of embeddings per leaf node (optimized for 10K-100K+ products)
+        leafNodeEmbeddingCount: 500
+        
+        # Percentage of leaf nodes to search (balance between speed and recall)
+        leafNodesToSearchPercent: 7
+        
+        # Fraction of the number of leaves to search
+        fractionLeafNodesToSearchPercent: 7.0
+
+  # Metadata Configuration
+  metadataSchemaUri: "gs://google-cloud-aiplatform/schema/matchingengine/metadata/nearest_neighbor_search_1.0.0.yaml"
+  
+  # Index Stats Configuration
+  indexStats:
+    vectorsCount: 0
+    shardsCount: 1
+
+---
+# Index Endpoint Configuration
+apiVersion: aiplatform.googleapis.com/v1
+kind: IndexEndpoint
+metadata:
+  name: product-search-endpoint
+  labels:
+    environment: production
+    use-case: product-search
+spec:
+  displayName: "Product Search Endpoint"
+  description: "Endpoint for serving product semantic search queries"
+  
+  # Network configuration
+  network: "projects/infinitum-agent/global/networks/default"
+  
+  # Enable private service access for better security
+  enablePrivateServiceConnect: false
+  
+  # Public endpoint configuration for API access
+  publicEndpointEnabled: true
+
+---
+# Deployment Configuration
+apiVersion: aiplatform.googleapis.com/v1
+kind: DeployedIndex
+metadata:
+  name: product-search-deployment
+spec:
+  # Reference to the index
+  index: "projects/infinitum-agent/locations/us-central1/indexes/product-semantic-index"
+  
+  # Reference to the endpoint
+  indexEndpoint: "projects/infinitum-agent/locations/us-central1/indexEndpoints/product-search-endpoint"
+  
+  # Deployment configuration
+  deployedIndexId: "product_search_v1"
+  displayName: "Product Search Deployment v1"
+  
+  # Machine configuration for serving
+  dedicatedResources:
+    machineSpec:
+      machineType: "n1-standard-2"  # Balanced CPU/memory for moderate load
+    minReplicaCount: 1
+    maxReplicaCount: 3
+    
+  # Auto-scaling configuration
+  automaticResources:
+    minReplicaCount: 1
+    maxReplicaCount: 10
+
+---
+# Alternative Configuration for High-Scale Deployment
+apiVersion: aiplatform.googleapis.com/v1
+kind: Index
+metadata:
+  name: product-semantic-index-large
+  labels:
+    environment: production
+    use-case: product-search
+    scale: large
+spec:
+  displayName: "Product Semantic Search Index (Large Scale)"
+  description: "High-scale vector index for 100K+ products with optimized performance"
+  
+  indexUpdateMethod: STREAM_UPDATE  # Real-time updates for large scale
+  
+  config:
+    dimensions: 768
+    approximateNeighborsCount: 200
+    distanceMeasureType: COSINE_DISTANCE
+    
+    algorithmConfig:
+      treeAhConfig:
+        leafNodeEmbeddingCount: 1000  # Larger leaf nodes for better performance
+        leafNodesToSearchPercent: 5   # Lower search percentage for speed
+        fractionLeafNodesToSearchPercent: 5.0
+
+---
+# Development/Testing Configuration
+apiVersion: aiplatform.googleapis.com/v1
+kind: Index
+metadata:
+  name: product-semantic-index-dev
+  labels:
+    environment: development
+    use-case: product-search
+spec:
+  displayName: "Product Semantic Search Index (Development)"
+  description: "Development vector index for testing and experimentation"
+  
+  indexUpdateMethod: BATCH_UPDATE
+  
+  config:
+    dimensions: 768
+    approximateNeighborsCount: 50   # Smaller for faster development
+    distanceMeasureType: COSINE_DISTANCE
+    
+    algorithmConfig:
+      treeAhConfig:
+        leafNodeEmbeddingCount: 100  # Smaller for development
+        leafNodesToSearchPercent: 10
+        fractionLeafNodesToSearchPercent: 10.0
