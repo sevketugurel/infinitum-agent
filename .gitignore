@@ -3,6 +3,8 @@ credentials/*.json
 # API keys and sensitive configuration
 *.key.json
 *.credentials.json
+# Zip files
+*.zip
 .env
 __pycache__/
 *.pyc
