@@ -83,8 +83,8 @@ class VectorSearchService:
         self.analytics_collection = db.collection('search_analytics')
         
         # Search configuration
-        self.default_deployed_index_id = "product_search_v1"
-        self.default_endpoint_name = "product-search-endpoint"
+        self.default_deployed_index_id = "product_search_dev_deploym_1754242468499"
+        self.default_endpoint_name = "product-search-endpoint-dev"
         
         # Performance settings
         self.max_concurrent_searches = 10

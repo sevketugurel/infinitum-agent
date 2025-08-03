@@ -1,0 +1,29 @@
+Vector Search Deployment Information
+===================================
+
+Project ID: infinitum-agent
+Environment: production
+Location: us-central1
+Storage Bucket: [0;34m[INFO][0m Creating GCS bucket: infinitum-agent-vector-embeddings
+[1;33m[WARNING][0m Bucket already exists: infinitum-agent-vector-embeddings
+infinitum-agent-vector-embeddings
+Sample Data URI: [0;34m[INFO][0m Creating sample embeddings data...
+Sample embeddings data created with 768 dimensions
+[0;32m[SUCCESS][0m Sample data uploaded to gs://[0;34m[INFO][0m/sample-data/
+gs://[0;34m[INFO][0m/sample-data/sample-embeddings.jsonl.gz
+
+Manual deployment required due to gcloud CLI compatibility issues.
+Please follow the instructions shown above.
+
+Next Steps:
+1. Complete manual deployment in Google Cloud Console
+2. Update your application configuration with the actual resource IDs
+3. Test the vector search functionality
+4. Generate embeddings for your product catalog
+
+Configuration Files:
+- Vector Index Config: backend/infra/vector-index.yaml
+- Service Implementation: backend/src/infinitum/infrastructure/external_services/
+- Tests: backend/tests/test_vector_search.py
+- Examples: backend/examples/vector_search_example.py
+- Documentation: backend/docs/vector-search-guide.md

@@ -77,10 +77,10 @@ metadata:
   name: product-search-deployment
 spec:
   # Reference to the index
-  index: "projects/infinitum-agent/locations/us-central1/indexes/product-semantic-index"
+  index: "projects/87113618847/locations/us-central1/indexes/5157837633199538176"
   
   # Reference to the endpoint
-  indexEndpoint: "projects/infinitum-agent/locations/us-central1/indexEndpoints/product-search-endpoint"
+  indexEndpoint: "projects/87113618847/locations/us-central1/indexEndpoints/1422963759411888128"
   
   # Deployment configuration
   deployedIndexId: "product_search_v1"
