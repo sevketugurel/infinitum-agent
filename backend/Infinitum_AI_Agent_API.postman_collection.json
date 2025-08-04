@@ -2,11 +2,13 @@
 	"info": {
 		"_postman_id": "infinitum-ai-agent-api",
 		"name": "Infinitum AI Agent API",
-		"description": "Complete API collection for testing Infinitum AI Agent endpoints",
+		"description": "Complete API collection for testing Infinitum AI Agent endpoints with JWT authentication",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "infinitum-ai-agent"
 	},
+
 	"item": [
+
 		{
 			"name": "Health & Status",
 			"item": [
@@ -32,7 +34,12 @@
 					"name": "Logging Health",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
 						"url": {
 							"raw": "{{base_url}}/admin/logging/health",
 							"host": [
@@ -44,7 +51,7 @@
 								"health"
 							]
 						},
-						"description": "Detailed logging system health check"
+						"description": "Detailed logging system health check (requires admin auth)"
 					},
 					"response": []
 				},
@@ -52,7 +59,12 @@
 					"name": "Metrics",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
 						"url": {
 							"raw": "{{base_url}}/metrics",
 							"host": [
@@ -62,7 +74,7 @@
 								"metrics"
 							]
 						},
-						"description": "Prometheus metrics endpoint"
+						"description": "Prometheus metrics endpoint (requires auth)"
 					},
 					"response": []
 				},
@@ -70,7 +82,12 @@
 					"name": "SerpAPI Status",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
 						"url": {
 							"raw": "{{base_url}}/serpapi-status",
 							"host": [
@@ -88,7 +105,12 @@
 					"name": "LLM Status",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
 						"url": {
 							"raw": "{{base_url}}/llm-status",
 							"host": [
@@ -106,7 +128,12 @@
 					"name": "Quota Status",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
 						"url": {
 							"raw": "{{base_url}}/quota-status",
 							"host": [
@@ -124,6 +151,148 @@
 			"description": "Health check and status monitoring endpoints"
 		},
 		{
+			"name": "AI Chat",
+			"item": [
+				{
+					"name": "Send Chat Message",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"message\": \"I'm looking for wireless headphones for gaming\",\n  \"conversation_id\": \"{{conversation_id}}\",\n  \"user_id\": \"{{user_id}}\",\n  \"context\": {\n    \"previous_messages\": [],\n    \"user_preferences\": {\n      \"budget_range\": \"mid-range\",\n      \"brand_preference\": [\"Sony\", \"Bose\"]\n    }\n  }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/chat",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"chat"
+							]
+						},
+						"description": "Send a chat message to the AI agent"
+					},
+					"response": []
+				},
+				{
+					"name": "Stream Chat Response",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Accept",
+								"value": "text/event-stream"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"message\": \"What are the best wireless headphones for gaming?\",\n  \"conversation_id\": \"{{conversation_id}}\",\n  \"user_id\": \"{{user_id}}\",\n  \"stream\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/chat/stream",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"chat",
+								"stream"
+							]
+						},
+						"description": "Stream chat response from AI agent"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Chat History",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/chat/history?user_id={{user_id}}&limit=20",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"chat",
+								"history"
+							],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "{{user_id}}",
+									"description": "User ID to get chat history for"
+								},
+								{
+									"key": "limit",
+									"value": "20",
+									"description": "Number of messages to retrieve"
+								}
+							]
+						},
+						"description": "Get chat history for a user"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Conversation History",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/v1/chat/history/{{conversation_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"chat",
+								"history",
+								"{{conversation_id}}"
+							]
+						},
+						"description": "Get specific conversation history"
+					},
+					"response": []
+				}
+			],
+			"description": "AI chat endpoints with JWT authentication"
+		},
+		{
 			"name": "Product Search & Packages",
 			"item": [
 				{
@@ -134,11 +303,15 @@
 							{
 								"key": "Content-Type",
 								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"query\": \"I want to buy home accessories\",\n  \"metadata\": {\n    \"source\": \"postman-test\",\n    \"category\": \"home-decor\"\n  },\n  \"user_id\": \"test-user-123\",\n  \"preferences\": {\n    \"budget_range\": \"mid-range\",\n    \"style\": \"modern\"\n  }\n}"
+							"raw": "{\n  \"query\": \"I want to buy home accessories\",\n  \"metadata\": {\n    \"source\": \"postman-test\",\n    \"category\": \"home-decor\"\n  },\n  \"user_id\": \"{{user_id}}\",\n  \"preferences\": {\n    \"budget_range\": \"mid-range\",\n    \"style\": \"modern\"\n  }\n}"
 						},
 						"url": {
 							"raw": "{{base_url}}/api/v1/packages",
@@ -163,11 +336,15 @@
 							{
 								"key": "Content-Type",
 								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"query\": \"best wireless headphones for gaming\",\n  \"metadata\": {\n    \"source\": \"postman-test\",\n    \"category\": \"electronics\"\n  },\n  \"user_id\": \"test-user-456\",\n  \"preferences\": {\n    \"budget_range\": \"high-end\",\n    \"brand_preference\": [\"Sony\", \"Bose\", \"Sennheiser\"]\n  }\n}"
+							"raw": "{\n  \"query\": \"best wireless headphones for gaming\",\n  \"metadata\": {\n    \"source\": \"postman-test\",\n    \"category\": \"electronics\"\n  },\n  \"user_id\": \"{{user_id}}\",\n  \"preferences\": {\n    \"budget_range\": \"high-end\",\n    \"brand_preference\": [\"Sony\", \"Bose\", \"Sennheiser\"]\n  }\n}"
 						},
 						"url": {
 							"raw": "{{base_url}}/api/v1/packages",
@@ -192,11 +369,15 @@
 							{
 								"key": "Content-Type",
 								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"query\": \"summer dresses for women\",\n  \"metadata\": {\n    \"source\": \"postman-test\",\n    \"category\": \"fashion\"\n  },\n  \"user_id\": \"test-user-789\",\n  \"preferences\": {\n    \"budget_range\": \"affordable\",\n    \"style\": \"casual\",\n    \"size\": \"M\"\n  }\n}"
+							"raw": "{\n  \"query\": \"summer dresses for women\",\n  \"metadata\": {\n    \"source\": \"postman-test\",\n    \"category\": \"fashion\"\n  },\n  \"user_id\": \"{{user_id}}\",\n  \"preferences\": {\n    \"budget_range\": \"affordable\",\n    \"style\": \"casual\",\n    \"size\": \"M\"\n  }\n}"
 						},
 						"url": {
 							"raw": "{{base_url}}/api/v1/packages",
@@ -217,7 +398,12 @@
 					"name": "Packages Health Check",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
 						"url": {
 							"raw": "{{base_url}}/api/v1/packages/health",
 							"host": [
@@ -248,11 +434,15 @@
 							{
 								"key": "Content-Type",
 								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"product_query\": \"iPhone 15 Pro Max\"\n}"
+							"raw": "{\n  \"product_query\": \"iPhone 15 Pro Max\",\n  \"user_id\": \"{{user_id}}\"\n}"
 						},
 						"url": {
 							"raw": "{{base_url}}/api/v1/research-product",
@@ -273,7 +463,12 @@
 					"name": "Scrape with Crawl4AI",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
 						"url": {
 							"raw": "{{base_url}}/api/v1/scrape-crawl4ai?url=https://www.amazon.com/dp/B0CM5KJ6B8",
 							"host": [
@@ -306,9 +501,14 @@
 					"name": "Get User Profile",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
 						"url": {
-							"raw": "{{base_url}}/api/v1/users/test-user-123/profile",
+							"raw": "{{base_url}}/api/v1/users/{{user_id}}/profile",
 							"host": [
 								"{{base_url}}"
 							],
@@ -316,7 +516,7 @@
 								"api",
 								"v1",
 								"users",
-								"test-user-123",
+								"{{user_id}}",
 								"profile"
 							]
 						},
@@ -332,6 +532,10 @@
 							{
 								"key": "Content-Type",
 								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
 							}
 						],
 						"body": {
@@ -339,7 +543,7 @@
 							"raw": "{\n  \"preferred_language\": \"en\",\n  \"currency\": \"USD\",\n  \"budget_conscious\": true,\n  \"quality_focused\": false,\n  \"brand_preferences\": [\"Apple\", \"Samsung\", \"Sony\"],\n  \"category_interests\": [\"electronics\", \"gaming\", \"audio\"],\n  \"price_range_preference\": \"mid_range\",\n  \"delivery_preference\": \"fast\",\n  \"review_importance\": \"high\",\n  \"warranty_importance\": \"medium\"\n}"
 						},
 						"url": {
-							"raw": "{{base_url}}/api/v1/users/test-user-123/preferences",
+							"raw": "{{base_url}}/api/v1/users/{{user_id}}/preferences",
 							"host": [
 								"{{base_url}}"
 							],
@@ -347,7 +551,7 @@
 								"api",
 								"v1",
 								"users",
-								"test-user-123",
+								"{{user_id}}",
 								"preferences"
 							]
 						},
@@ -359,9 +563,14 @@
 					"name": "Get User Conversations",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
 						"url": {
-							"raw": "{{base_url}}/api/v1/users/test-user-123/conversations?limit=10",
+							"raw": "{{base_url}}/api/v1/users/{{user_id}}/conversations?limit=10",
 							"host": [
 								"{{base_url}}"
 							],
@@ -369,7 +578,7 @@
 								"api",
 								"v1",
 								"users",
-								"test-user-123",
+								"{{user_id}}",
 								"conversations"
 							],
 							"query": [
@@ -388,9 +597,14 @@
 					"name": "Get User Context",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
 						"url": {
-							"raw": "{{base_url}}/api/v1/users/test-user-123/context?current_query=wireless headphones",
+							"raw": "{{base_url}}/api/v1/users/{{user_id}}/context?current_query=wireless headphones",
 							"host": [
 								"{{base_url}}"
 							],
@@ -398,7 +612,7 @@
 								"api",
 								"v1",
 								"users",
-								"test-user-123",
+								"{{user_id}}",
 								"context"
 							],
 							"query": [
@@ -417,9 +631,14 @@
 					"name": "Get Personalized Recommendations",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
 						"url": {
-							"raw": "{{base_url}}/api/v1/users/test-user-123/recommendations",
+							"raw": "{{base_url}}/api/v1/users/{{user_id}}/recommendations",
 							"host": [
 								"{{base_url}}"
 							],
@@ -427,7 +646,7 @@
 								"api",
 								"v1",
 								"users",
-								"test-user-123",
+								"{{user_id}}",
 								"recommendations"
 							]
 						},
@@ -439,7 +658,12 @@
 					"name": "Users Health Check",
 					"request": {
 						"method": "GET",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
 						"url": {
 							"raw": "{{base_url}}/api/v1/users/health",
 							"host": [
@@ -460,13 +684,157 @@
 			"description": "User management and context endpoints"
 		},
 		{
+			"name": "Admin & Logging",
+			"item": [
+				{
+					"name": "Logs Dashboard",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/logs/dashboard",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"logs",
+								"dashboard"
+							]
+						},
+						"description": "Access the logging dashboard (requires admin auth)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Logs API",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/logs/api",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"logs",
+								"api"
+							]
+						},
+						"description": "Get logs data via API (requires admin auth)"
+					},
+					"response": []
+				},
+				{
+					"name": "Filter Logs",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"level\": \"ERROR\",\n  \"logger_name\": \"infinitum\",\n  \"limit\": 50\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/logs/filter",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"logs",
+								"filter"
+							]
+						},
+						"description": "Filter logs by criteria (requires admin auth)"
+					},
+					"response": []
+				},
+				{
+					"name": "Clear Logs",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/logs/clear",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"logs",
+								"clear"
+							]
+						},
+						"description": "Clear all logs (requires admin auth)"
+					},
+					"response": []
+				},
+				{
+					"name": "Export Logs",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/logs/export",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"logs",
+								"export"
+							]
+						},
+						"description": "Export logs as JSON (requires admin auth)"
+					},
+					"response": []
+				}
+			],
+			"description": "Admin and logging management endpoints"
+		},
+		{
 			"name": "Cache Management",
 			"item": [
 				{
 					"name": "Clear Response Cache",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
 						"url": {
 							"raw": "{{base_url}}/clear-cache",
 							"host": [
@@ -484,31 +852,31 @@
 			"description": "Cache management endpoints"
 		}
 	],
-	"event": [
-		{
-			"listen": "prerequest",
-			"script": {
-				"type": "text/javascript",
-				"exec": [
-					""
-				]
-			}
-		},
-		{
-			"listen": "test",
-			"script": {
-				"type": "text/javascript",
-				"exec": [
-					""
-				]
-			}
-		}
-	],
+
 	"variable": [
 		{
 			"key": "base_url",
 			"value": "http://localhost:8080",
 			"type": "string"
+		},
+
+		{
+			"key": "user_id",
+			"value": "test-user-123",
+			"type": "string",
+			"description": "User ID for API requests"
+		},
+		{
+			"key": "user_email",
+			"value": "test@example.com",
+			"type": "string",
+			"description": "User email for authentication"
+		},
+		{
+			"key": "conversation_id",
+			"value": "conv-123",
+			"type": "string",
+			"description": "Conversation ID for chat requests"
 		}
 	]
 } 

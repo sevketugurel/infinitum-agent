@@ -35,3 +35,11 @@ faiss-cpu>=1.7.4,<2.0.0
 sentence-transformers>=2.2.0,<3.0.0
 transformers>=4.30.0,<5.0.0
 torch>=2.0.0,<3.0.0
+
+# Full-Stack Integration Dependencies
+python-jose[cryptography]>=3.3.0,<4.0.0
+python-multipart>=0.0.6,<1.0.0
+websockets>=12.0,<13.0.0
+sse-starlette>=1.6.5,<2.0.0
+pydantic[email]>=2.0.0,<3.0.0
+bcrypt>=4.0.0,<5.0.0
