@@ -1,0 +1,10 @@
+# Ignore all log files
+*.log
+*.log.*
+debug.log*
+error.log*
+access.log*
+
+# Keep the README
+!README.md
+!.gitignore

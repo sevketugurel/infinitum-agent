@@ -1,0 +1,91 @@
+services:
+  infinitum-ai-agent:
+    build:
+      context: ../..
+      dockerfile: infrastructure/docker/Dockerfile
+    container_name: infinitum-ai-agent
+    ports:
+      - "8080:8080"
+    volumes:
+      # Mount credentials directory for Google Cloud authentication
+      - ../../credentials:/app/credentials:ro
+      # Mount logs directory for persistent logging
+      - ../../logs:/app/logs
+      # Optional: Mount examples directory for testing
+      - ../../examples:/app/examples:ro
+    env_file:
+      - ../../config/.env
+    environment:
+      # Core configuration
+      - ENVIRONMENT=development
+      - PORT=8080
+      
+      # GCP Configuration (replace with your values)
+      - GCP_PROJECT_ID=${GCP_PROJECT_ID:-infinitum-agent}
+      - FIREBASE_PROJECT_ID=${FIREBASE_PROJECT_ID:-infinitum-agent}
+      - GOOGLE_CLOUD_PROJECT=${GOOGLE_CLOUD_PROJECT:-infinitum-agent}
+      
+      # Google Cloud Credentials
+      - GOOGLE_APPLICATION_CREDENTIALS=${GOOGLE_APPLICATION_CREDENTIALS:-/app/credentials/infinitum-agent-a9f15079e3e6.json}
+      
+      # Gemini Model Configuration
+      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-2.5-flash}
+      
+      # Enhanced Logging Configuration (Development)
+      - LOG_LEVEL=${LOG_LEVEL:-DEBUG}
+      - LOG_FILE_PATH=${LOG_FILE_PATH:-/app/logs/application.log}
+      - ENABLE_STRUCTURED_LOGGING=${ENABLE_STRUCTURED_LOGGING:-false}
+      - ENABLE_RICH_LOGGING=${ENABLE_RICH_LOGGING:-true}
+      - LOG_SAMPLING_RATE=${LOG_SAMPLING_RATE:-1.0}
+      
+      # Monitoring and Observability (Development)
+      - SENTRY_DSN=${SENTRY_DSN}
+      - ENABLE_METRICS=${ENABLE_METRICS:-true}
+      - METRICS_PORT=${METRICS_PORT:-9090}
+      - ENABLE_TRACING=${ENABLE_TRACING:-false}
+      
+      # Performance and Debug Settings (Development)
+      - ENABLE_PERFORMANCE_LOGGING=${ENABLE_PERFORMANCE_LOGGING:-true}
+      - LOG_SLOW_OPERATIONS=${LOG_SLOW_OPERATIONS:-true}
+      - SLOW_OPERATION_THRESHOLD=${SLOW_OPERATION_THRESHOLD:-0.5}
+      - ENABLE_DEBUG_LOGGING=${ENABLE_DEBUG_LOGGING:-true}
+    
+    # Resource limits for full application
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: '1.0'
+        reservations:
+          memory: 1G
+      
+    # Optional: Mount credentials if using service account
+    # volumes:
+    #   - ./credentials:/app/credentials:ro
+    #   - type: bind
+    #     source: /path/to/your/service-account.json
+    #     target: /app/credentials/service-account.json
+    #     read_only: true
+    
+    # Health check
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    
+    # Restart policy
+    restart: unless-stopped
+    
+    # Optional logging configuration
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+# Optional: Add a network for multiple services
+networks:
+  default:
+    name: infinitum-ai-network

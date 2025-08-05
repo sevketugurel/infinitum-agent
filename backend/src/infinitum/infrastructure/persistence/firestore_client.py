@@ -1,18 +1,28 @@
 # File: src/infinitum/db/firestore_client.py
 import firebase_admin
 from firebase_admin import credentials, firestore
-from infinitum.settings import settings
+from ...config.settings import Settings
+settings = Settings()
 import uuid
 from datetime import datetime
 
 # Initialize Firebase Admin SDK (do this once in your main.py)
-cred = credentials.ApplicationDefault()
-firebase_admin.initialize_app(cred, {'projectId': settings.FIREBASE_PROJECT_ID})
-
-db = firestore.client()
+try:
+    cred = credentials.ApplicationDefault()
+    firebase_admin.initialize_app(cred, {'projectId': settings.FIREBASE_PROJECT_ID})
+    db = firestore.client()
+    print("Firebase Admin SDK initialized successfully")
+except Exception as e:
+    print(f"Failed to initialize Firebase Admin SDK: {e}")
+    print("Firestore functionality will be disabled")
+    db = None
 
 def save_product_snapshot(product_data: dict):
     """Saves a product data dictionary to the 'products' collection."""
+    if db is None:
+        print("Firestore not available - skipping save")
+        return None
+        
     try:
         # Generate a unique document ID
         doc_id = None

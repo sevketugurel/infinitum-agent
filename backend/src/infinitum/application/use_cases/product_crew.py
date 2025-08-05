@@ -2,10 +2,10 @@
 from crewai import Agent, Task, Crew, Process
 from pydantic import BaseModel
 from typing import Optional
-from infinitum.infrastructure.external_services.vertex_ai import llm # The LLM brain
-from infinitum.application.use_cases.tools import SearchTool, ScrapeWebsiteTool # The tools
+from ...infrastructure.external.ai.vertex_ai_client import llm # The LLM brain
+from .tools import SearchTool, ScrapeWebsiteTool # The tools
 from crewai.llm import LLM
-from infinitum.settings import settings
+from ...config.settings import settings
 import os
 
 # Define the output model

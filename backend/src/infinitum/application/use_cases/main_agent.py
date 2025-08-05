@@ -14,17 +14,17 @@ import json
 import logging
 from datetime import datetime
 from typing import Dict, Any, List, Optional
-from infinitum.infrastructure.external_services.vertex_ai import ask_gemini
-from infinitum.infrastructure.external_services.crawl4ai_service import get_structured_data
-from infinitum.infrastructure.external_services.serpapi_service import search_google, search_google_shopping
-from infinitum.infrastructure.external_services.user_context_service import user_context_manager
-from infinitum.infrastructure.external_services.semantic_search_service import semantic_search_service
-from infinitum.infrastructure.external_services.package_templates import package_template_service
-from infinitum.infrastructure.persistence.firestore_client import db, save_product_snapshot
+from ...infrastructure.external.ai.vertex_ai_client import ask_gemini
+from ...infrastructure.external.scraping.crawl4ai_client import get_structured_data
+from ...infrastructure.external.search.serpapi_client import search_google, search_google_shopping
+from ...application.services.user_context_service import user_context_manager
+from ...infrastructure.external.search.semantic_search_client import semantic_search_service
+from ...infrastructure.external.templates.package_templates import package_template_service
+from ...infrastructure.persistence.firestore_client import db, save_product_snapshot
 import uuid
 
 # Import structured logging
-from infinitum.infrastructure.logging_config import get_agent_logger, log_agent_step, PerformanceTimer
+from ...infrastructure.monitoring.logging.config import get_agent_logger, log_agent_step, PerformanceTimer
 logger = get_agent_logger("orchestration")
 
 class AgentSession:
@@ -597,7 +597,7 @@ def _enhance_product_data(data: Dict[str, Any], url: str) -> Dict[str, Any]:
 async def _add_fallback_products(session: AgentSession, urls: List[str], existing_products: List[Dict[str, Any]]) -> None:
     """Add fallback products using our comprehensive real product database"""
     try:
-        from .services.serpapi_service import create_fallback_search_results
+        from ...infrastructure.external.search.serpapi_client import create_fallback_search_results
         
         # Get the original query from session - use the actual user query instead of hardcoded fallback
         original_query = getattr(session, 'query', getattr(session, 'user_query', "general products"))

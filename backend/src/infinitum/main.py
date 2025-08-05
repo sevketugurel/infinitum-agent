@@ -6,25 +6,25 @@ from prometheus_client import generate_latest, CONTENT_TYPE_LATEST
 from datetime import datetime
 
 # Import routers
-from infinitum.infrastructure.http.scrape import router as scrape_router
-from infinitum.infrastructure.http.packages import router as packages_router
-from infinitum.infrastructure.http.users import router as users_router
-from infinitum.infrastructure.http.ai_chat import router as ai_chat_router
+from .infrastructure.web.api.v1.search import router as search_router
+from .infrastructure.web.api.v1.packages import router as packages_router
+from .infrastructure.web.api.v1.users import router as users_router
+from .infrastructure.web.api.v1.chat import router as chat_router
 
 # Import services and utilities
-from infinitum.infrastructure.external_services.serpapi_service import get_serpapi_account_info
-from infinitum.infrastructure.persistence.firestore_client import db  # This will initialize Firebase
-from infinitum.infrastructure.external_services.vertex_ai import llm, ask_gemini, get_quota_status, get_cache_stats, clear_cache
-from infinitum.infrastructure.logging_config import (
-    setup_enhanced_logging, 
-    get_agent_logger, 
+from .infrastructure.external.search.serpapi_client import get_serpapi_account_info
+from .infrastructure.persistence.firestore_client import db  # This will initialize Firebase
+from .infrastructure.external.ai.vertex_ai_client import llm, ask_gemini, get_quota_status, get_cache_stats, clear_cache
+from .infrastructure.monitoring.logging.config import (
+    setup_enhanced_logging,
+    get_agent_logger,
     log_system_info,
     setup_debug_logging,
     log_business_event
 )
-from infinitum.infrastructure.middleware import setup_logging_middleware
-from infinitum.infrastructure.logging_dashboard import create_dashboard_routes, setup_log_capture, get_logging_health
-from infinitum.settings import settings
+from .infrastructure.web.middleware.logging_middleware import setup_logging_middleware
+from .infrastructure.monitoring.logging.dashboard import create_dashboard_routes, setup_log_capture, get_logging_health
+from .config.settings import settings
 
 # Setup Enhanced Logging
 setup_enhanced_logging()
@@ -104,10 +104,10 @@ log_business_event(
 )
 
 # Include API routers with proper prefixes
-app.include_router(scrape_router, prefix="/api/v1", tags=["scraping"])
+app.include_router(search_router, prefix="/api/v1", tags=["search"])
 app.include_router(packages_router, prefix="/api/v1", tags=["packages"])
 app.include_router(users_router, prefix="/api/v1", tags=["users"])
-app.include_router(ai_chat_router, prefix="/api/v1", tags=["ai-chat"])
+app.include_router(chat_router, prefix="/api/v1", tags=["chat"])
 
 # Health check endpoints
 @app.get("/healthz")
@@ -219,7 +219,7 @@ async def serpapi_status():
 async def llm_status():
     """Check LLM (Gemini) status and availability"""
     try:
-        from infinitum.infrastructure.external_services.vertex_ai import llm
+        from .infrastructure.external.ai.vertex_ai_client import llm
         
         if llm is None:
             return {

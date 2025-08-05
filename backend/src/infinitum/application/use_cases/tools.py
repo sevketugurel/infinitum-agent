@@ -6,7 +6,7 @@ import os
 import json
 
 # You'll need a third-party service like SerpAPI for reliable Google Search
-# Add its key to your .env file
+# Add its key to your config/.env file
 SERPAPI_API_KEY = os.getenv("SERPAPI_API_KEY")
 
 class SearchTool(BaseTool):
