@@ -192,6 +192,52 @@ Infinitum AI Agent, gelişmiş bir RAG mimarisi kullanarak kullanıcı sorgular�
 - **Kişiselleştirme**: Kullanıcı geçmişi ile özelleştirilmiş öneriler
 
 ---
+## 📁 **Proje Dosya Yapısı**
+
+```
+Infinitum AI Agent/
+├── backend/                          # Ana backend uygulaması
+│   ├── src/infinitum/                # Kaynak kod dizini
+│   │   ├── application/              # Uygulama katmanı (use cases, services)
+│   │   │   ├── use_cases/           # AI agents ve iş mantığı
+│   │   │   ├── services/            # Servis katmanı
+│   │   │   └── commands/            # CQRS command handlers
+│   │   ├── core/                    # Domain katmanı
+│   │   │   ├── entities/            # İş varlıkları (Product, User, etc.)
+│   │   │   └── value_objects/       # Değer nesneleri (Price, SearchQuery)
+│   │   ├── infrastructure/          # Altyapı katmanı
+│   │   │   ├── external/            # Dış servis entegrasyonları
+│   │   │   │   ├── ai/             # Vertex AI, embeddings clients
+│   │   │   │   ├── search/         # SerpAPI, Google Search
+│   │   │   │   └── scraping/       # Web scraping tools
+│   │   │   ├── web/                # FastAPI routes ve middleware
+│   │   │   ├── persistence/        # Firestore, database repos
+│   │   │   └── monitoring/         # Logging, metrics, tracing
+│   │   └── main.py                 # FastAPI uygulama giriş noktası
+│   ├── config/                     # Konfigürasyon dosyaları
+│   │   ├── .env.example           # Ortam değişkenleri şablonu
+│   │   └── .env                   # Yerel geliştirme ayarları
+│   ├── credentials/               # GCP service account keys
+│   ├── infrastructure/            # Deployment ve altyapı
+│   │   ├── docker/               # Docker konfigürasyonu
+│   │   ├── gcp/                  # Google Cloud YAML dosyaları
+│   │   ├── terraform/            # Infrastructure as Code
+│   │   └── kubernetes/           # K8s deployment files
+│   ├── scripts/                  # Deployment ve utility scripts
+│   │   └── deploy/              # Cloud Run, Vector Search deploy
+│   ├── docs/                    # Teknik dokümantasyon
+│   ├── logs/                    # Uygulama log dosyaları
+│   └── tests/                   # Unit ve integration testleri
+├── frontend/                    # React frontend uygulaması
+│   ├── src/
+│   │   ├── components/         # React bileşenleri
+│   │   ├── pages/             # Sayfa bileşenleri
+│   │   └── services/          # API client servisleri
+│   └── public/                # Statik dosyalar
+└── docs/                      # Proje dokümantasyonu
+    └── images/               # README görselleri
+```
+---
 
 ###  **Yapılandırılmış Loglama**
 ```bash
