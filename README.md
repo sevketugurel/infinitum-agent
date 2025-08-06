@@ -34,7 +34,7 @@ Infinitum AI Agent, kullanıcıların doğal dilde yaptıkları istekleri anlaya
 4.  **Kişiselleştirme** - Kullanıcı tercihlerine göre en uygun seçenekler belirlenir
 5.  **Paket Önerisi** - Komple kombinler ve alternatifler sunulur
 
-**Sonuç:** Kullanıcı, düğün için uygun elbiseler, ayakkabılar, aksesuarlar ve komple kombinleri içeren kişiselleştirilmiş bir paket önerisi alır. Ek olarak paketler, ürünler için yorumlardan ve açıklamalardan analiz ederek "Neden bu ürün/paket?" gibi açıklamalar ekleyerek kullanıcaya gösterir.
+**Sonuç:** Kullanıcı, düğün için uygun elbiseler, ayakkabılar, aksesuarlar ve komple kombinleri içeren kişiselleştirilmiş bir paket önerisi alır. Ek olarak paketler, ürünler için yorumlardan ve açıklamalardan analiz ederek "Neden bu ürün/paket?" gibi açıklamalar ekleyerek kullanıcaya gösterir. Ayrıca paket tiplerini 3 tip paket(F/P paketi, Kalite odaklı paket, Başlangıç-Ucuz paket) olarak getirmesini sağladık.
 
 ---
 
