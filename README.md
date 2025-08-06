@@ -1,325 +1,248 @@
-# 🚀 Infinitum AI Agent - Full-Stack Integration
+<div align="center" style="display: flex; align-items: center; justify-content: center; gap: 15px;">
 
-A comprehensive AI-powered product search and recommendation system built with React frontend and FastAPI backend, deployed on Google Cloud Platform.
+<img src="https://github.com/user-attachments/assets/3f224ae6-a71e-4092-8934-fb1f5c214d03" alt="Infinitum AI Agent Logo" width="100" height="100" />
 
-## 🎯 Overview
+# Infinitum AI Agent
 
-This project implements a complete full-stack integration between a sophisticated React frontend and a robust FastAPI backend, featuring:
 
-- **🤖 AI-Powered Chat**: Real-time conversation with advanced AI using Vertex AI Gemini
-- **🔍 Vector Search**: Semantic product search using Vertex AI embeddings
-- **🔐 Authentication**: Firebase Auth with JWT token validation
-- **⚡ Real-time Communication**: WebSocket and Server-Sent Events support
-- **📱 Modern UI**: Responsive React interface with Tailwind CSS
-- **☁️ Cloud-Native**: Deployed on Google Cloud Platform with auto-scaling
+**Yapay Zeka Destekli Akıllı Ürün Arama ve Öneri Platformu**
 
-## 🏗️ Architecture
+[![Python](https://img.shields.io/badge/Python-3.11%2B-blue.svg)](https://python.org)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.116%2B-green.svg)](https://fastapi.tiangolo.com)
+[![Google Cloud](https://img.shields.io/badge/Google%20Cloud-Vertex%20AI-orange.svg)](https://cloud.google.com/vertex-ai)
+[![CrewAI](https://img.shields.io/badge/CrewAI-0.150%2B-purple.svg)](https://crewai.com)
+[![Gemini](https://img.shields.io/badge/Gemini-2.5%20Pro-purple.svg)](https://ai.google.dev/gemini-api)
 
-```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   React Frontend │    │  FastAPI Backend │    │  Google Cloud   │
-│                 │    │                 │    │                 │
-│ • Firebase Auth │◄──►│ • JWT Validation│◄──►│ • Vertex AI     │
-│ • Zustand Store │    │ • Vector Search │    │ • Firestore     │
-│ • Real-time Chat│    │ • WebSocket API │    │ • Cloud Run     │
-│ • API Client    │    │ • CORS Support  │    │ • Secret Manager│
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-```
+*Gemini LLM, Vector Search ve Multi-Agent AI Sistemleri ile güçlendirilmiş akıllı ürün arama*
 
-## 🚀 Quick Start
-
-### Prerequisites
-
-- Node.js 18+ and npm
-- Python 3.11+
-- Google Cloud SDK
-- Firebase CLI
-- Docker (optional)
-
-### 1. Clone and Setup
-
-```bash
-git clone <repository-url>
-cd infinitum-ai-agent
-
-# Setup environment variables
-cp InfinitiumX/.env.example InfinitiumX/.env
-cp backend/.env.example backend/.env
-```
-
-### 2. Backend Setup
-
-```bash
-cd backend
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Set up Google Cloud credentials
-export GOOGLE_APPLICATION_CREDENTIALS="credentials/infinitum-agent-a9f15079e3e6.json"
-
-# Start the backend server
-uvicorn infinitum.main:app --reload --port 8080
-```
-
-### 3. Frontend Setup
-
-```bash
-cd InfinitiumX
-
-# Install dependencies
-npm install
-
-# Start the development server
-npm run dev
-```
-
-### 4. Test Integration
-
-```bash
-# Run integration tests
-chmod +x scripts/test-integration.sh
-./scripts/test-integration.sh
-```
-
-## 📁 Project Structure
-
-```
-infinitum-ai-agent/
-├── 📁 backend/                          # FastAPI Backend
-│   ├── 📁 src/infinitum/
-│   │   ├── 📄 main.py                   # FastAPI app with CORS
-│   │   ├── 📄 settings.py               # Configuration
-│   │   └── 📁 infrastructure/
-│   │       ├── 📁 auth/
-│   │       │   └── 📄 auth_middleware.py # Firebase JWT validation
-│   │       ├── 📁 http/
-│   │       │   ├── 📄 ai_chat.py        # AI chat endpoints
-│   │       │   ├── 📄 packages.py       # Product packages API
-│   │       │   └── 📄 users.py          # User management
-│   │       └── 📁 external_services/
-│   │           ├── 📄 vector_search_service.py # Vector search
-│   │           ├── 📄 embeddings_service.py    # Text embeddings
-│   │           └── 📄 vertex_ai.py             # AI integration
-│   ├── 📁 infra/                        # Deployment configs
-│   └── 📄 requirements.txt              # Python dependencies
-├── 📁 InfinitiumX/                      # React Frontend
-│   ├── 📁 src/
-│   │   ├── 📄 App.jsx                   # Main app with auth integration
-│   │   ├── 📁 components/
-│   │   │   ├── 📄 AIChat.jsx            # Enhanced chat component
-│   │   │   └── 📄 AuthModal.jsx         # Login/signup modal
-│   │   ├── 📁 services/
-│   │   │   ├── 📄 api.js                # API client with auth
-│   │   │   └── 📄 firebase.js           # Firebase auth service
-│   │   └── 📁 store/
-│   │       ├── 📄 authStore.js          # Authentication state
-│   │       └── 📄 chatStore.js          # Chat state management
-│   └── 📄 package.json                  # Frontend dependencies
-├── 📁 scripts/
-│   ├── 📄 deploy-full-stack.sh          # Production deployment
-│   └── 📄 test-integration.sh           # Integration testing
-├── 📄 docker-compose.full-stack.yml     # Full-stack Docker setup
-├── 📄 FULL_STACK_INTEGRATION.md         # Detailed integration guide
-└── 📄 README.md                         # This file
-```
-
-## 🔧 Key Features Implemented
-
-### ✅ Authentication & Security
-- **Firebase Authentication** with email/password and Google sign-in
-- **JWT Token Validation** on backend with automatic refresh
-- **Role-based Access Control** with middleware decorators
-- **Rate Limiting** to prevent API abuse
-- **CORS Configuration** for secure cross-origin requests
-
-### ✅ Real-time Communication
-- **WebSocket Support** for live chat updates
-- **Server-Sent Events** for streaming AI responses
-- **Connection Status Indicators** in the UI
-- **Automatic Reconnection** handling
-
-### ✅ AI & Search Integration
-- **Vertex AI Gemini** for natural language processing
-- **Vector Search** with semantic similarity matching
-- **Hybrid Search** combining keyword and semantic search
-- **Product Recommendations** based on user context
-- **Chat History** with conversation management
-
-### ✅ State Management
-- **Zustand Stores** for client-side state management
-- **Persistent Storage** with localStorage integration
-- **Optimistic Updates** for better user experience
-- **Error Handling** with user-friendly messages
-
-### ✅ Production Ready
-- **Docker Support** with multi-stage builds
-- **Health Checks** for monitoring
-- **Structured Logging** with Google Cloud Logging
-- **Metrics Collection** with Prometheus
-- **Auto-scaling** configuration for Cloud Run
-
-## 🔗 API Endpoints
-
-### Authentication
-- `POST /api/v1/users/{user_id}/preferences` - Update user preferences
-- `GET /api/v1/users/{user_id}/profile` - Get user profile
-
-### AI Chat
-- `POST /api/v1/chat` - Send chat message
-- `GET /api/v1/chat/stream` - Stream AI response (SSE)
-- `WS /api/v1/chat/ws/{user_id}` - WebSocket connection
-- `GET /api/v1/chat/history` - Get chat history
-
-### System
-- `GET /healthz` - Health check
-- `GET /health/detailed` - Detailed system status
-- `GET /api/config` - Frontend configuration
-
-## 🚀 Deployment
-
-### Local Development
-```bash
-# Using Docker Compose
-docker-compose -f docker-compose.full-stack.yml up
-
-# Or run services separately
-npm run dev          # Frontend (port 5173)
-uvicorn infinitum.main:app --reload --port 8080  # Backend
-```
-
-### Production Deployment
-```bash
-# Deploy to Google Cloud Platform
-chmod +x scripts/deploy-full-stack.sh
-./scripts/deploy-full-stack.sh
-```
-
-This will:
-- Deploy backend to Cloud Run
-- Deploy frontend to Firebase Hosting
-- Set up vector search infrastructure
-- Configure secrets in Secret Manager
-- Run health checks
-
-## 🧪 Testing
-
-### Integration Tests
-```bash
-# Run all integration tests
-./scripts/test-integration.sh
-
-# Test specific endpoints
-curl -f http://localhost:8080/healthz
-curl -f http://localhost:8080/api/v1/chat -X POST \
-  -H "Content-Type: application/json" \
-  -d '{"message": "test message"}'
-```
-
-### Performance Benchmarks
-- **API Response Time**: < 500ms average
-- **WebSocket Latency**: < 100ms
-- **Memory Usage**: < 2GB backend
-- **Concurrent Users**: 100+ supported
-
-## 🔧 Configuration
-
-### Environment Variables
-
-#### Frontend (`.env`)
-```env
-VITE_FIREBASE_API_KEY=your-firebase-api-key
-VITE_FIREBASE_PROJECT_ID=infinitum-agent
-VITE_API_BASE_URL=http://localhost:8080
-VITE_WS_BASE_URL=ws://localhost:8080
-```
-
-#### Backend (`.env`)
-```env
-GCP_PROJECT_ID=infinitum-agent
-FIREBASE_PROJECT_ID=infinitum-agent
-GEMINI_API_KEY=your-gemini-api-key
-SERPAPI_API_KEY=your-serpapi-key
-GOOGLE_APPLICATION_CREDENTIALS=path/to/credentials.json
-```
-
-## 🐛 Troubleshooting
-
-### Common Issues
-
-1. **CORS Errors**: Check CORS configuration in `backend/src/infinitum/main.py`
-2. **Auth Failures**: Verify Firebase configuration and API keys
-3. **WebSocket Issues**: Ensure WebSocket URL is correct and firewall allows connections
-4. **AI Search Errors**: Check Vertex AI setup and API quotas
-
-### Debug Mode
-```bash
-# Enable debug logging
-export ENABLE_DEBUG_LOGGING=true
-export LOG_LEVEL=DEBUG
-
-# Check service health
-curl http://localhost:8080/health/detailed
-```
-
-## 📊 Monitoring
-
-### Health Checks
-- Backend: `http://localhost:8080/healthz`
-- Detailed Status: `http://localhost:8080/health/detailed`
-- Metrics: `http://localhost:8080/metrics`
-
-### Logging
-- Structured logging with JSON format
-- Google Cloud Logging integration
-- Error tracking with context
-- Performance metrics collection
-
-## 🔮 Future Enhancements
-
-- [ ] Push notifications for real-time updates
-- [ ] Offline support with service workers
-- [ ] Mobile app with React Native
-- [ ] Advanced analytics and A/B testing
-- [ ] Multi-language support (i18n)
-- [ ] Voice chat integration
-- [ ] Advanced recommendation algorithms
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests for new functionality
-5. Run integration tests
-6. Submit a pull request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## 🙏 Acknowledgments
-
-- **Google Cloud Platform** for AI and infrastructure services
-- **Firebase** for authentication and hosting
-- **React** and **FastAPI** for the excellent frameworks
-- **Tailwind CSS** for the beautiful UI components
+</div>
 
 ---
 
-## 🎉 Success Metrics
+## 📖 Proje Hakkında
 
-This full-stack integration successfully implements:
+Infinitum AI Agent, kullanıcıların doğal dilde yaptıkları istekleri anlayarak, internetten en uygun ürünleri bulan ve kişiselleştirilmiş öneriler sunan gelişmiş bir yapay zeka platformudur.
 
-✅ **Complete Authentication Flow** - Firebase Auth with JWT validation  
-✅ **Real-time AI Chat** - WebSocket and SSE support  
-✅ **Vector Search Integration** - Semantic product search  
-✅ **Production-Ready Deployment** - Cloud Run and Firebase Hosting  
-✅ **Comprehensive Testing** - Integration and performance tests  
-✅ **Security Best Practices** - CORS, rate limiting, input validation  
-✅ **State Management** - Zustand with persistence  
-✅ **Error Handling** - User-friendly error messages  
-✅ **Performance Optimization** - Caching and lazy loading  
-✅ **Documentation** - Complete integration guide  
+### Örnek Kullanım Senaryosu
 
-**🚀 Ready for production deployment with enterprise-grade features!**
+**Kullanıcı:** Uygulamada arama kısmına *"Kız kardeşimin düğünü var ve kıyafet bulmam gerekiyor bana elbiseler ve kombinler bul."* şeklinde bir prompt girer.
+
+**AI Agent Süreci:**
+1.  **İstek Analizi** - Gemini LLM isteği analiz eder (düğün, kadın kıyafeti, kombinler, düğünde giyilebilecek ürünler)
+2.  **Akıllı Arama** - Multi-agent sistem farklı e-ticaret sitelerinde veya kendi Vertex veritabanında arama yapar 
+3.  **Ürün Filtreleme** - Bulunan ürünler kalite, fiyat ve uygunluk açısından değerlendirilir
+4.  **Kişiselleştirme** - Kullanıcı tercihlerine göre en uygun seçenekler belirlenir
+5.  **Paket Önerisi** - Komple kombinler ve alternatifler sunulur
+
+**Sonuç:** Kullanıcı, düğün için uygun elbiseler, ayakkabılar, aksesuarlar ve komple kombinleri içeren kişiselleştirilmiş bir paket önerisi alır. Ek olarak paketler, ürünler için yorumlardan ve açıklamalardan analiz ederek "Neden bu ürün/paket?" gibi açıklamalar ekleyerek kullanıcaya gösterir.
+
+---
+
+## Projeden Ekran Görüntüleri
+
+<!-- Buraya ekran görüntüleri eklenecek -->
+
+###  Arama Arayüzü
+<img width="1912" height="1015" alt="Screenshot 2025-08-06 at 17 26 55" src="https://github.com/user-attachments/assets/5e1ceabe-5c6c-4a32-a4a2-308be5adbb26" />
+
+###  AI Arama Süreci ve Ek Prompt girilmesi
+<img width="1912" height="1017" alt="Screenshot 2025-08-06 at 17 27 54" src="https://github.com/user-attachments/assets/92719d34-f991-4482-b0c1-c626343ed8d6" />
+
+###  Arama Sonuçları
+<img width="1912" height="1014" alt="Screenshot 2025-08-06 at 17 28 15" src="https://github.com/user-attachments/assets/f2e9fcf0-b198-48f0-ab22-51a33f40c830" />
+
+<img width="1912" height="1012" alt="Screenshot 2025-08-06 at 17 28 51" src="https://github.com/user-attachments/assets/7ffe458e-e856-4122-a411-4a3fee018d03" />
+
+---
+
+##  Temel Özellikler
+
+###  **Gelişmiş AI Yetenekleri**
+- **Gemini 2.5 Pro/Flash Entegrasyonu** - Akıllı sorgu işleme ve keyword extraction için LLM
+- **Multi-Agent Mimarisi** - CrewAI destekli agentlar ile araştırma ve analiz
+- **Semantik Vector Arama** - Vertex AI embeddings ile benzerlik eşleştirmesi
+- **Akıllı Sorgu Geliştirme** - Bağlam farkında arama optimizasyonu
+
+###  **Akıllı Ürün Keşfi**
+- **Hibrit Arama Motoru** - Semantik arama ile geleneksel anahtar kelime eşleştirmesini birleştirir
+- **Akıllı Paket Oluşturma** - Kullanıcı niyetine göre AI tarafından düzenlenmiş ürün paketleri
+- **Kişiselleştirilmiş Öneriler** - Kullanıcı bağlamı ve tercih öğrenimi
+- **Çoklu Kaynak Veri Toplama** - SerpAPI, web scraping ve ürün veritabanları
+- **Fiyat Karşılaştırması ve Analizi** - Birden fazla satıcıdan gerçek zamanlı fiyat verileri
+
+### 🏗 **Üretime Hazır Altyapı**
+- **Ölçeklenebilir Bulut Mimarisi** - Otomatik ölçeklendirme ile Google Cloud Run
+- **Kapsamlı İzleme** - Yapılandırılmış loglama, metrikler ve izleme
+- **Güvenlik Öncelikli** - JWT kimlik doğrulama, girdi doğrulama ve güvenli kimlik bilgisi yönetimi
+- **Yüksek Performans** - Asenkron işlemler, caching ve bağlantı havuzu mekanizmaları kullanıldı
+
+##  API Örnekleri
+
+###  **Temel Sohbet İsteği**
+```bash
+curl -X POST "http://localhost:8080/api/v1/chat" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "message": "200 TL altında kablosuz kulaklık bul",
+    "conversation_id": "conv-123"
+  }'
+```
+<img width="1920" height="1050" alt="Screenshot 2025-08-06 at 17 34 14" src="https://github.com/user-attachments/assets/43bcdea1-e781-45c4-8e74-b7285175b8e8" />
+
+
+###  **Paket Oluşturma**
+```bash
+curl -X POST "http://localhost:8080/api/v1/packages" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "I want to buy home accessories",
+    "metadata": {
+      "source": "postman-test",
+      "category": "home-decor"
+    },
+    "user_id": "{{user_id}}",
+    "preferences": {
+      "budget_range": "mid-range",
+      "style": "modern"
+    }
+  }'
+```
+<img width="1920" height="1050" alt="Screenshot 2025-08-06 at 17 40 10" src="https://github.com/user-attachments/assets/e4f10d5e-ea52-4f56-a318-0710c5dce689" />
+
+---
+
+# Mimari Genel Bakış
+
+## **5 Workflow**
+```mermaid
+sequenceDiagram
+    participant User
+    participant API as FastAPI
+    participant Gemini as Gemini LLM
+    participant Agents as CrewAI Agents
+    participant Search as Vector Search
+    participant DB as Firestore
+
+    User->>API: Send Query
+    API->>Gemini: 1. Analyze Intent
+    Gemini-->>API: Extracted Keywords
+    API->>Agents: 2. Multi-Source Search
+    Agents->>Search: SerpAPI + Web Scraping
+    Search-->>Agents: Product URLs
+    API->>Agents: 3. Filter & Validate
+    Agents-->>API: Prioritized URLs
+    API->>Agents: 4. Extract Data
+    Agents-->>API: Structured Products
+    API->>Gemini: 5. Curate Response
+    Gemini-->>API: Personalized Package
+    API->>DB: Save Session
+    API-->>User: Final Response
+```
+
+##  **Google Cloud Platform Altyapısı**
+
+![WhatsApp Image 2025-08-06 at 14 54 57](https://github.com/user-attachments/assets/bea8f505-5030-4d1f-b423-aab7e86b72c4)
+
+### **Kullanılan GCP Servisleri**
+- **[Vertex AI](https://cloud.google.com/vertex-ai)** - Gemini LLM hosting ve vector search
+- <img width="1800" height="1130" alt="Screenshot 2025-08-06 at 18 51 41" src="https://github.com/user-attachments/assets/8db0cb09-5757-4324-98b3-9edaef754379" />
+- **[Cloud Run](https://cloud.google.com/run)** - Serverless container deployment
+- **[Firestore](https://cloud.google.com/firestore)** - NoSQL document database
+- <img width="1800" height="1130" alt="Screenshot 2025-08-06 at 18 53 24" src="https://github.com/user-attachments/assets/cf870e2b-ecb2-45d0-97aa-9d11e9bc1bb2" />
+- **[Secret Manager](https://cloud.google.com/secret-manager)** - API key management
+- **[Cloud Storage](https://cloud.google.com/storage)** - Vector embeddings storage
+- <img width="1800" height="1130" alt="Screenshot 2025-08-06 at 18 55 09" src="https://github.com/user-attachments/assets/5f59e327-8e8d-418b-8ac2-217572ded01d" />
+- **[Container Registry](https://cloud.google.com/container-registry)** - Docker image 
+
+---
+##  **RAG (Retrieval-Augmented Generation) Sistemi**
+
+Infinitum AI Agent, gelişmiş bir RAG mimarisi kullanarak kullanıcı sorgularını işler ve kişiselleştirilmiş ürün önerileri sunmayı amaçlamaktadır:
+
+### **RAG İş Akışı:**
+
+1. ** Query Processing (Sorgu İşleme)**
+   - Kullanıcının doğal dil sorgusunu Gemini LLM ile analiz eder
+   - Anahtar kelimeleri, kategorileri ve kullanıcı niyetini çıkarır
+   - Sorguyu yapılandırılmış arama parametrelerine dönüştürür
+
+2. ** Retrieval (Bilgi Getirme)**
+   - **Vector Search**: Vertex AI ile 768 boyutlu embeddings kullanarak semantik arama
+   - **External APIs**: SerpAPI ile gerçek zamanlı ürün verisi çekme
+   - **Web Scraping**: Crawl4AI ile e-ticaret sitelerinden ürün detayları
+   - **Database Query**: Firestore'dan geçmiş arama sonuçları ve kullanıcı tercihleri
+
+3. ** Augmentation (Veri Zenginleştirme)**
+   - Çekilen ürün verilerini kalite, fiyat ve uygunluk açısından filtreler
+   - Kullanıcı profiline göre relevans skorları hesaplar
+   - Benzer ürünleri gruplar ve paket önerileri oluşturur
+   - Ürün yorumları ve açıklamalarını analiz eder
+
+4. ** Generation (Yanıt Üretme)**
+   - Zenginleştirilmiş veriyi Gemini LLM'e context olarak verir
+   - Kişiselleştirilmiş ürün paketleri ve açıklamalar üretir
+   - "Neden bu ürün?" mantığını açıklayan detaylar ekler
+   - Kullanıcı dostu format ve sunum oluşturur
+
+### **RAG'in Avantajları:**
+- **Doğruluk**: Gerçek zamanlı veri ile güncel bilgi
+- **Dinamiklik**: Sürekli güncellenen ürün katalogu
+- **Akıllılık**: LLM'in anlama yetisi + güncel veri
+- **Hız**: Vector search ile milisaniye cevap süresi
+- **Kişiselleştirme**: Kullanıcı geçmişi ile özelleştirilmiş öneriler
+
+---
+
+###  **Yapılandırılmış Loglama**
+```bash
+# Sağlık kontrolü
+curl http://localhost:8080/healthz
+
+# Detaylı sistem durumu
+curl http://localhost:8080/health/detailed
+
+# Prometheus metrikleri
+curl http://localhost:8080/metrics
+```
+# Admin Log Dashboard
+Geliştirme sürecinde katmanları ve logları daha iyi analiz edebilmek için geliştirilmiştir.
+http://localhost:8080/admin/logs/dashboard
+
+<img width="1800" height="1130" alt="Screenshot 2025-08-06 at 17 44 55" src="https://github.com/user-attachments/assets/05109cfc-c813-402a-9e8c-86f3abcfc415" />
+
+---
+
+
+##  Hedeflenen Kullanıcı Profilleri
+
+###  **E-Ticaret Entegrasyonu**
+Infinitum AI Agent, büyük e-ticaret platformlarının arama deneyimini devrim niteliğinde geliştirmeyi hedeflemektedir:
+
+- **[Trendyol](https://www.trendyol.com) ve [Hepsiburada](https://www.hepsiburada.com)** - Türkiye'nin önde gelen e-ticaret platformuna AI destekli API tabanlı entegrasyon
+- **Diğer E-Ticaret Platformları** - GittiGidiyor, N11, Amazon Türkiye gibi platformlara uyarlanabilir çözümler
+
+###  **Fiyat Karşılaştırma Platformu**
+Mevcut fiyat karşılaştırma sitelerine alternatif olarak yeni nesil bir platform geliştirme hedefi:
+
+- **[Akakçe](https://www.akakce.com) ve [Cimri](https://www.cimri.com)   Benzeri Platform** - AI destekli akıllı fiyat karşılaştırması ve Gelişmiş ürün analizi ve öneri sistemi
+- **Yenilikçi Özellikler** - Doğal dil işleme ile akıllı arama, otomatik paket önerileri, kişiselleştirilmiş alışveriş deneyimi
+
+###  **Ticari Hedefler**
+- **B2B Entegrasyon** - Mevcut e-ticaret platformlarına API tabanlı entegrasyon
+- **B2C Platform** - Bağımsız akıllı alışveriş asistanı platformu
+- **SaaS Çözümü** - E-ticaret şirketleri için hazır AI arama çözümü
+- **White-Label Ürün** - Markalı çözümler için özelleştirilebilir platform
+
+---
+
+## Dökümantasyonlar
+
+**[📖 Dokümantasyonu Okuyun](backend/docs/README.md)** • **[🔧 Hızlı Kurulum](#-hızlı-başlangıç)** • **[💬 Topluluğa Katılın](https://github.com/your-org/infinitum-ai-agent/discussions)**
+
+---
+
+** BTK Hackathon'25 için Infinitum AI Ekibi tarafından geliştirilmiştir**
+
+*Gelişmiş AI ve makine öğrenmesi ile akıllı ürün keşfini güçlendiriyoruz*
+
+</div>
