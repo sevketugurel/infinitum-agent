@@ -237,11 +237,15 @@ Mevcut fiyat karşılaştırma sitelerine alternatif olarak yeni nesil bir platf
 
 ## Dökümantasyonlar
 
-**[📖 Dokümantasyonu Okuyun](backend/docs/README.md)** • **[🔧 Hızlı Kurulum](#-hızlı-başlangıç)** • **[💬 Topluluğa Katılın](https://github.com/your-org/infinitum-ai-agent/discussions)**
+**[📖 Dokümantasyonu Okuyun](backend/docs/README.md)** • **[🔧 Hızlı Kurulum](#-hızlı-başlangıç)** 
 
 ---
 
-** BTK Hackathon'25 için Infinitum AI Ekibi tarafından geliştirilmiştir**
+## Contributors
+<a name="contributors"></a>
+[![Sevket Ugurel](https://github.com/sevketugurel.png?size=50)](https://github.com/sevketugurel)  [![Enes Beşiktaş](https://github.com/EnesBesiktas.png?size=50)](https://github.com/EnesBesiktas) [![Ahmet irşad Bacanak](https://github.com/irsadbacanak.png?size=50)](https://github.com/irsadbacanak)  
+
+**BTK Hackathon'25 için Infinitum AI Ekibi tarafından geliştirilmiştir**
 
 *Gelişmiş AI ve makine öğrenmesi ile akıllı ürün keşfini güçlendiriyoruz*
 
