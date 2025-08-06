@@ -46,37 +46,7 @@ app = FastAPI(
 )
 
 # CORS Configuration for Frontend Integration
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",  # React development server
-        "http://localhost:5173",  # Vite development server
-        "http://localhost:4173",  # Vite preview server
-        "https://infinitum-agent.web.app",  # Firebase hosting
-        "https://infinitum-agent.firebaseapp.com",  # Firebase hosting
-        # Note: Wildcard subdomains not supported in CORS
-        # Add specific domains as needed for production deployments
-    ],
-    allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
-    allow_headers=[
-        "Authorization",
-        "Content-Type",
-        "X-Requested-With",
-        "Accept",
-        "Origin",
-        "User-Agent",
-        "DNT",
-        "Cache-Control",
-        "X-Mx-ReqToken",
-        "Keep-Alive",
-        "X-Requested-With",
-        "If-Modified-Since",
-    ],
-    expose_headers=["*"]
-)
-
-# Security middleware
+# Security middleware - This should be one of the first middlewares
 app.add_middleware(
     TrustedHostMiddleware,
     allowed_hosts=[
@@ -85,8 +55,29 @@ app.add_middleware(
         "*.run.app",  # Google Cloud Run
         "*.appspot.com",  # Google App Engine
         "infinitum-agent.web.app",
-        "infinitum-agent.firebaseapp.com"
+        "infinitum-agent.firebaseapp.com",
+        "*" # Allow all hosts for local development
     ]
+)
+
+# CORS Configuration - This should be one of the last middlewares
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:3000",
+        "http://localhost:5173",
+        "http://localhost:5174",
+        "http://localhost:4173",
+        "https://infinitum-agent.web.app",
+        "https://infinitum-agent.firebaseapp.com",
+        "http://localhost",
+        "https://infinitum-agent.run.app",
+        "https://infinitum-agent.appspot.com",
+        "*" # Allow all origins for local development
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all methods
+    allow_headers=["*"],  # Allow all headers
 )
 
 # Setup logging middleware and dashboard
